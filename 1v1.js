@@ -106,6 +106,9 @@ function get_no_sight_around(near_obstacle, enemy_cell, me, enemy) {
 }
 
 function main(main_turn) {
+
+	var antibug_of_leekwar = 10;
+	var second_antibug_of_leekwar = 10;
 	var turn = getTurn(); // max 64
 	if (turn < 2) {
 		say("C'est qui le taulier ?!");
@@ -143,6 +146,8 @@ function main(main_turn) {
 		}
 		setWeapon(weapon);
 	}
+	
+	if (canUseChip(CHIP_ARMORING, me)) useChip(CHIP_ARMORING, me);
 
 	for (var i = 0; i < count(cells_buble); i++) {
 		if (canUseChipOnCell(CHIP_PUNY_BULB, cells_buble[i])) {
@@ -164,10 +169,21 @@ function main(main_turn) {
 		if (shoot_if(weapon, enemy)) {
 			break;
 		} else {
-			var cells = weapon == WEAPON_1 ? cell_pistol : cell_machine_gun;
-			debug('move to cell for shoot');
-			debug(cells);
-			moveTowardCells(cells, 1);
+			var cells_shoot = weapon == WEAPON_1 ? cell_pistol : cell_machine_gun;
+			debug('move to cell for shoot, MP = ');
+			debug(getMP());
+			antibug_of_leekwar--;
+			if (antibug_of_leekwar < 1) {
+				second_antibug_of_leekwar--;
+				if (second_antibug_of_leekwar < 1) {
+					break;
+				}
+				debug('function towardCell bug so we go on enemy');
+				moveToward(enemy, 1);
+			} else {
+				debug(cells_shoot);
+				moveTowardCell(cells_shoot[0], 1);
+			}
 		}
 	}
 
