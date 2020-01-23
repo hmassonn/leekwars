@@ -94,8 +94,10 @@ class Leekwar():
             enemy[0].click()
             i += 1
 
-
 run = Leekwar()
-run.init()
-run.leekwar()
+try:
+    run.init()
+    run.leekwar()
+except Exception as e:
+    print(e)
 run.quit()
