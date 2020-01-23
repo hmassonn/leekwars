@@ -10,9 +10,10 @@
 // WEAPON_LASER
 // WEAPON_DOUBLE_GUN
 // WEAPON_DESTROYER
+// WEAPON_FLAME_THROWER
 
-global WEAPON_1 = WEAPON_LASER;
-global WEAPON_2 = WEAPON_DESTROYER;
+global WEAPON_1 = WEAPON_DESTROYER;
+global WEAPON_2 = WEAPON_FLAME_THROWER;
 
 function heal_target(leek) {
 	debug('heal_target');
@@ -27,10 +28,14 @@ function heal_target(leek) {
 		debug('CHIP_CURE');
 		useChip(CHIP_CURE, leek);
 	}
-	if (actualLife < (fullLife - 45) and canUseChip(CHIP_BANDAGE, leek)) {
-		debug('CHIP_BANDAGE');
-		useChip(CHIP_BANDAGE, leek);
+}
+
+function is_further(cell_a, cell_b) {
+	var cell_me = getCell();
+	if (getPathLength(cell_me, cell_b) < getPathLength(cell_me, cell_a)) {
+		return 1;
 	}
+	return 0;
 }
 
 function try_weapon(weapon, cell_me, enemy, @cell_list) {
@@ -38,6 +43,7 @@ function try_weapon(weapon, cell_me, enemy, @cell_list) {
 		return true;
 	}
 	debug('try with close cells');
+	cell_list = arraySort(cell_list, is_further);
 	for (var i = 0; i < count(cell_list); i++) {
 		if (getPathLength(cell_me, cell_list[i]) < getMP()) {
 			cell_list = [cell_list[i]];
@@ -91,14 +97,18 @@ function is_block(cell) {
 }
 
 function try_help(master, enemy) {
+	debug('try help');
 	var master_full_life = getTotalLife(master);
 	var master_actual_life = getLife(master);
 	
 	if (canUseChip(CHIP_HELMET, master)) useChip(CHIP_HELMET, master);
+	debug('bandage');
 	if (master_actual_life < master_full_life - 15) {
 		if (canUseChip(CHIP_BANDAGE, master)) useChip(CHIP_BANDAGE, master);
 	}
-	if (canUseChip(CHIP_PROTEIN, master)) useChip(CHIP_PROTEIN, master);	
+	debug('protein');
+	if (canUseChip(CHIP_PROTEIN, master)) useChip(CHIP_PROTEIN, master);
+	debug('pebble');
 	if (canUseChip(CHIP_PEBBLE, enemy)) useChip(CHIP_PEBBLE, enemy);
 }
 
@@ -111,6 +121,7 @@ function punyAI(){
 
 	
 	try_help(master, enemy);
+	debug('moving');
 	if (is_block(master) and getPathLength(cell_master, cell_me) < 2) {
 		moveAwayFrom(master);
 	} else {
