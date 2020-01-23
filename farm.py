@@ -30,12 +30,29 @@ from dateutil.relativedelta                             import relativedelta
 TIMEZONE = 'Europe/Paris'
 tz = pytz.timezone(TIMEZONE)
 
+
+TOTAL_ATTACK    = 50
+ID_POIRO        = '74480'
+
 class Leekwar():
     def receiveSignal(self, signalNumber, frame):
         if signalNumber == 2:
             print('Received SIGINT maybe ctrl+c')
         self.quit()
         return
+
+    def catch_find_xpath(self, driver, xpath):
+        result = False
+        attempts = 0
+        # print(xpath)
+        while(attempts < 2 or result):
+            try:
+                ret = driver.find_elements_by_xpath(xpath)
+                result = True
+                break
+            except StaleElementReferenceException:
+                attempts += 1
+        return ret
 
     def init(self):
         self.data_json = {}
@@ -48,10 +65,12 @@ class Leekwar():
 
     def quit(self):
         self.driver.quit()
+        exit()
 
     def leekwar(self):
+        i = 0
         self.driver.get('https://leekwars.com/login')
-        time.sleep(3)
+        time.sleep(2)
         login_field = self.driver.find_element_by_name('login')
         login_field.clear()
         login_field.send_keys(self.data_json['login'])
@@ -59,11 +78,22 @@ class Leekwar():
         pass_field.clear()
         pass_field.send_keys(self.data_json['password'])
         pass_field.send_keys(Keys.RETURN)
-        time.sleep(3)
-        self.driver.get('https://leekwars.com/garden')
-        poireau = self.driver.find_element_by_class_name('name')[0]
-        print(poireau)
-        # poireau.click()
+        time.sleep(2)
+        self.driver.get('https://leekwars.com/garden/solo/'+ ID_POIRO)
+        time.sleep(2)
+        cross = self.catch_find_xpath(self.driver, "//div[@class='options']/div[@class='option']")
+        cross[0].click()
+        time.sleep(1)
+        enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
+        enemy[0].click()
+        time.sleep(2)
+        while (i < TOTAL_ATTACK):
+            self.driver.get('https://leekwars.com/garden/solo/'+ ID_POIRO)
+            time.sleep(2)
+            enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
+            enemy[0].click()
+            i += 1
+
 
 run = Leekwar()
 run.init()
