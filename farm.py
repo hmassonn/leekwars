@@ -31,11 +31,13 @@ TIMEZONE = 'Europe/Paris'
 tz = pytz.timezone(TIMEZONE)
 
 
-TOTAL_ATTACK    = 50
+TOTAL_ATTACK        = 50
+TOTAL_ATTACK_TEAM   = 20
 # Bondu         73987
 # Gradin        74172
 # Eglair        74480
-ID_POIRO        = '74480'
+ID_POIRO            = '74480'
+ID_BESTOF           = '23613'
 
 class Leekwar():
     def receiveSignal(self, signalNumber, frame):
@@ -82,7 +84,8 @@ class Leekwar():
         pass_field.send_keys(self.data_json['password'])
         pass_field.send_keys(Keys.RETURN)
         time.sleep(2)
-        self.driver.get('https://leekwars.com/garden/solo/'+ ID_POIRO)
+        self.driver.get('https://leekwars.com/garden/team/'+ ID_BESTOF)
+        # kill news
         time.sleep(2)
         cross = self.catch_find_xpath(self.driver, "//div[@class='options']/div[@class='option']")
         cross[0].click()
@@ -90,6 +93,12 @@ class Leekwar():
         enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
         enemy[0].click()
         time.sleep(2)
+        while (i < TOTAL_ATTACK_TEAM):
+            self.driver.get('https://leekwars.com/garden/team/'+ ID_BESTOF)
+            time.sleep(2)
+            enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
+            enemy[0].click()
+            i += 1
         while (i < TOTAL_ATTACK):
             self.driver.get('https://leekwars.com/garden/solo/'+ ID_POIRO)
             time.sleep(2)
