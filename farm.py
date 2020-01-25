@@ -7,6 +7,7 @@ import selenium
 import signal
 import random
 import pyautogui
+import argparse
 from secrets                                            import token_hex
 from bson                                               import json_util
 # selenium
@@ -59,7 +60,8 @@ class Leekwar():
                 attempts += 1
         return ret
 
-    def init(self):
+    def init(self, args):
+        self.no_team = args.no_team
         self.data_json = {}
         file_json = open('leekwar.json', "r+")
         data_file = file_json.read()
@@ -90,15 +92,17 @@ class Leekwar():
         cross = self.catch_find_xpath(self.driver, "//div[@class='options']/div[@class='option']")
         cross[0].click()
         time.sleep(1)
-        enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
-        enemy[0].click()
-        time.sleep(2)
-        while (i < TOTAL_ATTACK_TEAM):
-            self.driver.get('https://leekwars.com/garden/team/'+ ID_BESTOF)
-            time.sleep(2)
+        if not self.no_team:
             enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
             enemy[0].click()
-            i += 1
+        time.sleep(2)
+        if not self.no_team:
+            while (i < TOTAL_ATTACK_TEAM):
+                self.driver.get('https://leekwars.com/garden/team/'+ ID_BESTOF)
+                time.sleep(2)
+                enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
+                enemy[0].click()
+                i += 1
         while (i < TOTAL_ATTACK):
             self.driver.get('https://leekwars.com/garden/solo/'+ ID_POIRO)
             time.sleep(2)
@@ -106,10 +110,19 @@ class Leekwar():
             enemy[0].click()
             i += 1
 
-run = Leekwar()
-try:
-    run.init()
-    run.leekwar()
-except Exception as e:
-    print(e)
-run.quit()
+def main():
+    parser = argparse.ArgumentParser(description="leekwar runing attack")
+    parser.add_argument('-nt', '--no-team',      help='no team mode',
+                        action='store_true',  default=False, dest='no_team')
+    args = parser.parse_args()
+
+    run = Leekwar()
+    try:
+        run.init(args)
+        run.leekwar()
+    except Exception as e:
+        print(e)
+    run.quit()
+
+if __name__ == "__main__":
+    main()
