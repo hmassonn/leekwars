@@ -32,7 +32,7 @@ tz = pytz.timezone(TIMEZONE)
 
 
 TOTAL_ATTACK        = 50
-TOTAL_ATTACK_TEAM   = 20
+TOTAL_ATTACK_TEAM   = 10
 # Bondu         73987
 # Gradin        74172
 # Eglair        74480
