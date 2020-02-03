@@ -33,11 +33,11 @@ tz = pytz.timezone(TIMEZONE)
 
 
 TOTAL_ATTACK        = 50
-TOTAL_ATTACK_TEAM   = 10
+TOTAL_ATTACK_TEAM   = 9
 # Bondu         73987
 # Gradin        74172
 # Eglair        74480
-ID_POIRO            = '74480'
+ID_POIRO            = '73987'
 ID_BESTOF           = '23613'
 
 class Leekwar():
