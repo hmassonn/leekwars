@@ -33,7 +33,7 @@ tz = pytz.timezone(TIMEZONE)
 
 
 TOTAL_ATTACK        = 50
-TOTAL_ATTACK_TEAM   = 9
+TOTAL_ATTACK_TEAM   = 10
 # Bondu         73987
 # Gradin        74172
 # Eglair        74480
@@ -106,7 +106,7 @@ class Leekwar():
         while (i < TOTAL_ATTACK):
             self.driver.get('https://leekwars.com/garden/solo/'+ ID_POIRO)
             time.sleep(2)
-            enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']/div")
+            enemy = self.catch_find_xpath(self.driver, "//div[@class='opponents']")
             enemy[0].click()
             i += 1
 
